@@ -1,0 +1,34 @@
+If you are reading this, it means that supervisord is installed and you have to use it.
+
+ATTENTION: use standard start command ($ bin/instance start, $ bin/zeo-server start ...)
+           only for debug purpose, not in the standard operation mode.
+
+Start all
+=========
+
+Use the bin/supervisord-init script to start the entire system (zeo, instances, solr ...) and
+the supervisord itself; this because you can stop the supervisord script only by killing it.
+Supervisord start automatically only the porcesses with the attribute autostart set to true.
+
+
+Check status
+============
+
+To check which process is up and if there is a problem, use this command:
+
+$ bin/supervisorctl status
+
+
+Handle single porcess
+=====================
+
+To start/stop a sigle process, use the syntax like this:
+
+$ bin/supervisorctl start instance
+$ bin/supervisorctl stop instance
+
+if supervisord is up you can start/stop all processes with this command:
+
+$ bin/supervisorctl start all
+$ bin/supervisorctl stop all
+

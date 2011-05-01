@@ -1,0 +1,3 @@
+#!/bin/bash
+/bin/su -c "${buildout:directory}/bin/snapshotbackup" - ${users:zeo-server}
+/bin/su -c "${buildout:directory}/bin/zeopack" - ${users:zeo-server}

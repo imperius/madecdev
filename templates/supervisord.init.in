@@ -1,0 +1,49 @@
+#!/bin/sh
+
+DAEMON=${buildout:directory}/bin/supervisord
+NAME=supervisord
+DESC="supervisor daemon"
+PIDFILE=${buildout:directory}/var/$NAME.pid
+SSD="/sbin/start-stop-daemon"
+ 
+test -x $DAEMON || exit 1
+ 
+set -e 
+ 
+. /lib/lsb/init-functions
+ 
+DAEMON_OPTS=""
+ 
+case "$1" in
+  start)
+	log_daemon_msg "Starting $DESC" $NAME
+	if ! $SSD --start --quiet\
+	--pidfile $PIDFILE --exec $DAEMON -- $DAEMON_OPTS ; then
+            log_end_msg 1
+	else
+            log_end_msg 0
+	fi
+    ;;
+  stop)
+	log_daemon_msg "Stopping $DESC" $NAME
+	if $SSD --stop --retry 30\
+	--pidfile $PIDFILE ; then
+	    rm -f $PIDFILE
+	    log_end_msg 0
+	else
+	    log_end_msg 1
+	fi
+	;;
+  restart)
+	$0 stop
+	[ -r  $PIDFILE ] && while pidof -x $NAME |\
+		 grep -q `cat $PIDFILE 2>/dev/null` 2>/dev/null ; do sleep 1; done
+	$0 start
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop|restart}" >&2
+	exit 1
+	;;
+esac
+ 
+exit 0
